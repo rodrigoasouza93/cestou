@@ -1,4 +1,4 @@
-package com.cestou
+package dev.rodrigosouza.cestou
 
 import android.app.Application
 import android.content.res.Configuration

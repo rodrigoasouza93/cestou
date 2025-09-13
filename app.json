@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "cestou",
-    "slug": "Cestou",
-    "owner": "dev.rodrigosouza.cestou",
+    "name": "Cestou",
+    "slug": "cestou",
+    "owner": "rodrigosouza",
     "version": "1.0.0",
     "icon": "./assets/images/icon.png",
     "plugins": [
@@ -18,6 +18,12 @@
           "imageWidth": 200
         }
       ]
-    ]
+    ],
+    "android": {
+      "package": "dev.rodrigosouza.cestou"
+    },
+    "ios": {
+      "bundleIdentifier": "dev.rodrigosouza.cestou"
+    }
   }
 }
