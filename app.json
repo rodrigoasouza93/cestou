@@ -1,8 +1,23 @@
 {
   "expo": {
     "name": "cestou",
-    "slug": "cestou",
+    "slug": "Cestou",
     "owner": "dev.rodrigosouza.cestou",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "icon": "./assets/images/icon.png",
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#232323",
+          "image": "./assets/images/splash-icon.png",
+          "dark": {
+            "image": "./assets/images/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
+        }
+      ]
+    ]
   }
 }
