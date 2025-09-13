@@ -2,6 +2,7 @@
   "expo": {
     "name": "cestou",
     "slug": "cestou",
+    "owner": "dev.rodrigosouza.cestou",
     "version": "1.0.0"
   }
 }
