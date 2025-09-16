@@ -23,8 +23,8 @@ export function BottomRoutes() {
       initialRouteName="home"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#2A4B5A",
-        tabBarInactiveTintColor: "#888888",
+        tabBarActiveTintColor: "#79B44F",
+        tabBarInactiveTintColor: "#999999",
         tabBarLabelPosition: "beside-icon",
       }}
     >
