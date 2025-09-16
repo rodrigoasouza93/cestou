@@ -1,61 +1,65 @@
 import { StyleSheet } from "react-native";
 
+const colors = {
+  primary: "#2A4B5A",
+  highlight: "#79B44F",
+  background: "#F2F2F2",
+  white: "#FFFFFF",
+  text: "#1A1A1A",
+  secondaryText: "#6B7280",
+  danger: "#EF4444",
+  border: "#E5E7EB",
+};
+
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F2F2F2",
-    alignItems: "center",
-    paddingTop: 62,
-  },
-  logo: {
-    height: 60,
-    width: 134,
-  },
   form: {
     width: "100%",
-    paddingHorizontal: 16,
-    gap: 7,
-    marginTop: 42,
+    paddingHorizontal: 24,
+    gap: 8,
+    marginTop: 30,
   },
   content: {
     flex: 1,
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    padding: 24,
+    paddingHorizontal: 24,
     paddingTop: 32,
     marginTop: 24,
   },
   header: {
     width: "100%",
     flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#e4e6ec",
-    paddingBottom: 12,
+    borderBottomColor: colors.border,
+    paddingBottom: 16,
   },
   clearButton: {
     marginLeft: "auto",
+    padding: 4,
   },
   clearText: {
-    fontSize: 12,
-    color: "#EF4444",
-    fontWeight: 600,
+    fontSize: 14,
+    color: colors.danger,
+    fontWeight: "600",
   },
   separator: {
     width: "100%",
     height: 1,
-    backgroundColor: "#EEF0F5",
-    marginVertical: 16,
+    backgroundColor: colors.border,
+    marginVertical: 12,
   },
   listContent: {
     paddingTop: 24,
-    paddingBottom: 62,
+    paddingBottom: 100,
   },
   empty: {
     fontSize: 14,
-    color: "#808080",
+    color: colors.secondaryText,
     textAlign: "center",
+    marginTop: 48,
   },
 });

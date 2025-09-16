@@ -1,107 +1,128 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  Alert,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Text, FlatList, Alert, TouchableOpacity } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { styles } from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
-import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
-import { useEffect, useState } from "react";
+import { Template } from "@/components/Template";
 import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
+import { FilterStatus } from "@/types/FilterStatus";
 
-const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
+const FILTER_OPTIONS: FilterStatus[] = [
+  FilterStatus.PENDING,
+  FilterStatus.DONE,
+];
 
 export function Home() {
-  const [filter, setFilter] = useState(FilterStatus.PENDING);
+  const [filter, setFilter] = useState<FilterStatus>(FilterStatus.PENDING);
   const [description, setDescription] = useState("");
   const [items, setItems] = useState<ItemStorage[]>([]);
+  const [filteredItems, setFilteredItems] = useState<ItemStorage[]>([]);
 
   async function handleAdd() {
     if (!description.trim()) {
       return Alert.alert("Adicionar", "Informe a descrição para adicionar.");
     }
 
-    const newItem = {
-      id: Math.random().toString(36).substring(2),
+    const newItem: ItemStorage = {
+      id: String(new Date().getTime()),
       description,
       status: FilterStatus.PENDING,
     };
 
-    await itemsStorage.add(newItem);
-    await itemsByStatus();
-    Alert.alert("Adicionado", `Adicionado ${description}`);
+    const updatedItems = [...items, newItem];
+    setItems(updatedItems);
     setFilter(FilterStatus.PENDING);
     setDescription("");
-  }
 
-  async function itemsByStatus() {
     try {
-      const response = await itemsStorage.getByStatus(filter);
-      setItems(response);
+      await itemsStorage.add(newItem);
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível recuperar os itens.");
+      Alert.alert("Erro", "Não foi possível salvar o novo item.");
+      setItems(items);
     }
   }
 
   async function handleRemove(id: string) {
+    const updatedItems = items.filter((item) => item.id !== id);
+    setItems(updatedItems);
+
     try {
       await itemsStorage.remove(id);
-      await itemsByStatus();
     } catch (error) {
       console.error(error);
-      Alert.alert("Remover", "Não foi possível remover.");
+      Alert.alert("Remover", "Não foi possível remover o item.");
+      setItems(items);
     }
   }
 
   function handleClear() {
     Alert.alert("Limpar", "Deseja remover todos os itens?", [
-      {
-        text: "Não",
-        style: "cancel",
-      },
-      {
-        text: "Sim",
-        onPress: () => onClear(),
-      },
+      { text: "Não", style: "cancel" },
+      { text: "Sim", onPress: onClear },
     ]);
   }
 
   async function onClear() {
+    setItems([]);
     try {
       await itemsStorage.clear();
-      setItems([]);
     } catch (error) {
       console.error(error);
       Alert.alert("Erro", "Não foi possível remover todos os itens.");
+      loadItems();
     }
   }
 
   async function handleToggleItemStatus(id: string) {
+    const updatedItems = items.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            status:
+              item.status === FilterStatus.PENDING
+                ? FilterStatus.DONE
+                : FilterStatus.PENDING,
+          }
+        : item
+    );
+    setItems(updatedItems);
+
     try {
       await itemsStorage.toggleStatus(id);
-      await itemsByStatus();
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível atualizar o status.");
+      Alert.alert("Erro", "Não foi possível atualizar o status do item.");
+      setItems(items);
     }
   }
 
+  async function loadItems() {
+    try {
+      const storedItems = await itemsStorage.get();
+      setItems(storedItems);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível carregar os itens da sua lista.");
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadItems();
+    }, [])
+  );
+
   useEffect(() => {
-    itemsByStatus();
-  }, [filter]);
+    const newFilteredItems = items.filter((item) => item.status === filter);
+    setFilteredItems(newFilteredItems);
+  }, [items, filter]);
 
   return (
-    <View style={styles.container}>
-      <Image source={require("@/assets/logo.png")} style={styles.logo} />
-
+    <Template>
       <View style={styles.form}>
         <Input
           placeholder="O que você precisa comprar?"
@@ -113,7 +134,7 @@ export function Home() {
 
       <View style={styles.content}>
         <View style={styles.header}>
-          {FILTER_STATUS.map((status) => (
+          {FILTER_OPTIONS.map((status) => (
             <Filter
               key={status}
               status={status}
@@ -128,7 +149,7 @@ export function Home() {
         </View>
 
         <FlatList
-          data={items}
+          data={filteredItems}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Item
@@ -145,7 +166,6 @@ export function Home() {
           )}
         />
       </View>
-      <StatusBar style="auto" />
-    </View>
+    </Template>
   );
 }
